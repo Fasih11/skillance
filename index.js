@@ -199,5 +199,5 @@ server.get("/", (req, res) => {
 });
 
 server.listen(process.env.PORT, () => {
-  console.log("server started");
+  console.log("Server Started");
 });
