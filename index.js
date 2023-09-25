@@ -24,6 +24,7 @@ const { User } = require("./model/User");
 const { isAuth, sanitizeUser, cookieExtractor } = require("./services/common");
 const { loginUser } = require("./controller/Auth");
 const path = require("path");
+const { Order } = require("./model/Order");
 
 //Webhook
 
