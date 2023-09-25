@@ -158,7 +158,7 @@ passport.serializeUser(function (user, cb) {
   });
 });
 
-//This creates session variable req.user when called from authorized request
+
 passport.deserializeUser(function (user, cb) {
   console.log("De-Serialize", user);
 
