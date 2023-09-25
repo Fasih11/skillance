@@ -23,7 +23,7 @@ const ordersRouter = require("./routes/Order");
 const { User } = require("./model/User");
 const { isAuth, sanitizeUser, cookieExtractor } = require("./services/common");
 const { loginUser } = require("./controller/Auth");
-const path = require('path')
+const path = require("path");
 
 //Webhook
 
@@ -68,7 +68,7 @@ opts.secretOrKey = process.env.JWT_SECRET_KEY; //TODO: Should not be in code
 
 //middlewares
 
-server.use(express.static(path.resolve(__dirname,'build')));
+server.use(express.static(path.resolve(__dirname, "build")));
 server.use(cookieParser());
 server.use(
   session({
@@ -92,7 +92,9 @@ server.use("/users", isAuth(), usersRouter.router);
 server.use("/auth", authRouter.router);
 server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), ordersRouter.router);
-server.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html')));
+server.get("*", (req, res) =>
+  res.sendFile(path.resolve("build", "index.html"))
+);
 
 //passport startergies
 passport.use(
@@ -181,9 +183,9 @@ server.post("/create-payment-intent", async (req, res) => {
     automatic_payment_methods: {
       enabled: true,
     },
-    metadata:{
+    metadata: {
       orderId
-    }
+    },
   });
 
   res.send({
