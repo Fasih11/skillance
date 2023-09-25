@@ -19,4 +19,4 @@ cartSchema.set('toJSON',{
 })
 
 
-exports.Cart = mongoose.model('Cart',cartSchema)
+exports.Cart = mongoose.model('Cart', cartSchema)
