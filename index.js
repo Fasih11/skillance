@@ -31,7 +31,7 @@ const endpointSecret = process.env.ENDPOINT_SECRET;
 server.post(
   "/webhook",
   express.raw({ type: "application/json" }),
-  (request, response) => {
+  async (request, response) => {
     const sig = request.headers["stripe-signature"];
 
     let event;
@@ -47,8 +47,11 @@ server.post(
     switch (event.type) {
       case "payment_intent.succeeded":
         const paymentIntentSucceeded = event.data.object;
-        console.log({ paymentIntentSucceeded });
-        // Then define and call a function to handle the event payment_intent.succeeded
+        const order = await Order.findById(
+          paymentIntentSucceeded.metadata.orderId
+        );
+        order.paymentStatus = "Received";
+        await order.save();
         break;
       // ... handle other event types
       default:
@@ -158,7 +161,6 @@ passport.serializeUser(function (user, cb) {
   });
 });
 
-
 passport.deserializeUser(function (user, cb) {
   console.log("De-Serialize", user);
 
@@ -184,7 +186,7 @@ server.post("/create-payment-intent", async (req, res) => {
       enabled: true,
     },
     metadata: {
-      orderId
+      orderId,
     },
   });
 
