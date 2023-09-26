@@ -15,6 +15,7 @@ exports.createUser = async (req, res) => {
       32,
       "sha256",
       async function (err, hashedPassword) {
+        //A new user object is created with the hashed password and salt and saved to the database. 
         const user = new User({ ...req.body, password: hashedPassword, salt });
         const doc = await user.save();
 
