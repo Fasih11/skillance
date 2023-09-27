@@ -9,7 +9,6 @@ const userSchema = new Schema(
     addresses: { type: [Schema.Types.Mixed] },
     // TODO: Will make a separate Schema for this
     name: { type: String },
-    //orders: { type: [Schema.Types.Mixed] }
     salt: Buffer,
     resetPasswordToken: { type: String, default: "" },
   },
