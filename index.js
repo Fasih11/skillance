@@ -12,7 +12,6 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const cookieParser = require("cookie-parser");
 
-
 const { createProduct } = require("./controller/Product");
 const productsRouter = require("./routes/Products");
 const categoriesRouter = require("./routes/Categories");
@@ -69,7 +68,7 @@ server.post(
 
 const opts = {};
 opts.jwtFromRequest = cookieExtractor;
-opts.secretOrKey = process.env.JWT_SECRET_KEY; //TODO: Should not be in code
+opts.secretOrKey = process.env.JWT_SECRET_KEY;
 
 //middlewares
 
@@ -97,7 +96,6 @@ server.use("/users", isAuth(), usersRouter.router);
 server.use("/auth", authRouter.router);
 server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), ordersRouter.router);
-
 
 server.get("*", (req, res) =>
   res.sendFile(path.resolve("build", "index.html"))
@@ -174,18 +172,23 @@ passport.deserializeUser(function (user, cb) {
 });
 
 //Payments
-
-// This is your test secret API key.
+// Test secret API key.
+//Start
 const stripe = require("stripe")(process.env.STRIPE_SERVER_KEY);
 
 server.post("/create-payment-intent", async (req, res) => {
   const { totalAmount, orderId } = req.body;
 
-  // Create a PaymentIntent with the order amount and currency
+  // Calculate the fee amount (15% of the original total)
+  const feeAmount = totalAmount * 0.15;
+
+  // Calculate the new total by adding the fee amount
+  const newTotal = totalAmount + feeAmount;
+
+  // Create a PaymentIntent with the new total and currency
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: totalAmount * 100,
+    amount: newTotal * 100, // Convert to cents
     currency: "gbp",
-    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
     automatic_payment_methods: {
       enabled: true,
     },
@@ -196,6 +199,8 @@ server.post("/create-payment-intent", async (req, res) => {
 
   res.send({
     clientSecret: paymentIntent.client_secret,
+    feeAmount: feeAmount, // Optionally, send the fee amount in the response
+    newTotal: newTotal, // Optionally, send the new total in the response
   });
 });
 
@@ -213,3 +218,5 @@ server.get("/", (req, res) => {
 server.listen(process.env.PORT, () => {
   console.log("Server Started");
 });
+
+//End
