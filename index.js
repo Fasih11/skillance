@@ -20,14 +20,24 @@ const usersRouter = require("./routes/Users");
 const authRouter = require("./routes/Auth");
 const cartRouter = require("./routes/Cart");
 const ordersRouter = require("./routes/Order");
+const premierRouter = require("./routes/Premier");
 const { User } = require("./model/User");
 const { isAuth, sanitizeUser, cookieExtractor } = require("./services/common");
 const { loginUser } = require("./controller/Auth");
 const path = require("path");
 const { Order } = require("./model/Order");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
+const app = express();
+const router = express.Router();
+
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+server.use("/uploads", express.static("./uploads"));
+
 
 //Webhook
-
 const endpointSecret = process.env.ENDPOINT_SECRET;
 server.post(
   "/webhook",
@@ -96,6 +106,7 @@ server.use("/users", isAuth(), usersRouter.router);
 server.use("/auth", authRouter.router);
 server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), ordersRouter.router);
+server.use("/premier", isAuth(), premierRouter.router);
 
 server.get("*", (req, res) =>
   res.sendFile(path.resolve("build", "index.html"))
@@ -218,5 +229,8 @@ server.get("/", (req, res) => {
 server.listen(process.env.PORT, () => {
   console.log("Server Started");
 });
+
+
+require('./model')
 
 //End
