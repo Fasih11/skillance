@@ -7,14 +7,12 @@ const premierSchema = new Schema({
     verified_by_passport: { type: String, required: true },
     utility_bill: { type: String, required: true },
     driving_license: { type: String, required: true },
-    concent_recived: { type: String, required: true },
+    consent: { type: String, required: true },
     recent_photo: { type: String, required: true },
     resume: { type: String, required: true },
     ni_number: { type: String, required: true },
-    // daily_or_hourly_date: { type: String, required: true },
-    // availablity_hours: { type: String, required: true },
-    daily: { type: String, required: true },
-    hourly: { type: String, required: true },
+    hourly_rate: { type: String, required: true },
+    weekly_availability_hours: { type: String, required: true },
 },
    { timestamps: true }
 )
@@ -26,7 +24,11 @@ virtual.get(function(){
 premierSchema.set('toJSON',{
     virtuals: true,
     versionKey: false,
-    transform: function (doc,ret) { delete ret._id}
+    transform: function (doc,ret) {
+      ret.createdAt = new Date(ret.createdAt).toLocaleString(); // Convert createdAt
+      ret.updatedAt = new Date(ret.updatedAt).toLocaleString(); // Convert updatedAt      
+      delete ret._id
+    }
 })
 
 premierSchema.on("index", function (err) {
@@ -38,5 +40,3 @@ premierSchema.on("index", function (err) {
   });
 
 exports.Premier = mongoose.model('Premier', premierSchema)
-
-// Changes end

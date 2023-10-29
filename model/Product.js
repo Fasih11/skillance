@@ -20,7 +20,6 @@ const productSchema = new Schema({
     max: [5, "wrong max price"],
     default: 0,
   },
-  stock: { type: Number, min: [0, "wrong min stock"], default: 0 },
   brand: { type: String, required: true },
   category: { type: String, required: true },
   thumbnail: { type: String, required: true },
@@ -34,11 +33,6 @@ const virtualId = productSchema.virtual("id");
 virtualId.get(function () {
   return this._id;
 });
-
-// const virtualDiscountPrice = productSchema.virtual("discountPrice");
-// virtualDiscountPrice.get(function () {
-//   return Math.round(this.price * (1 - this.discountPercentage / 100));
-// });
 
 productSchema.set("toJSON", {
   virtuals: true,

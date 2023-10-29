@@ -49,7 +49,7 @@ const upload = multer({
       maxCount: 1 
     },
     { 
-      name: 'concent_recived', 
+      name: 'consent', 
       maxCount: 1 
     },
     { 
